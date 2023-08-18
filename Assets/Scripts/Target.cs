@@ -6,10 +6,11 @@ public class Target : MonoBehaviour
 {
     private Rigidbody _targetRb;
     private GameManager _gameManager;
-    [SerializeField] float _maxTorque = 2;
+    [SerializeField] float _maxTorque = 2f;
     [SerializeField] int badScoreCount = -10;
     [SerializeField] float _zRange = 15f;
     [SerializeField] float _ySpawnPos = 25f;
+    [SerializeField] float _yPosToDestroy;
 
     // Start is called before the first frame update
     void Awake()
@@ -20,6 +21,11 @@ public class Target : MonoBehaviour
         _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
 
         transform.position = RandomSpawnPos();
+    }
+
+    private void Update()
+    {
+        DestroyOnFall();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -57,5 +63,13 @@ public class Target : MonoBehaviour
     Vector3 RandomSpawnPos()
     {
         return new Vector3(0, _ySpawnPos, Random.Range(-_zRange, _zRange));
+    }
+
+    void DestroyOnFall()
+    {
+        if (gameObject.transform.position.y < _yPosToDestroy)
+        {
+            Destroy(gameObject);
+        }
     }
 }
