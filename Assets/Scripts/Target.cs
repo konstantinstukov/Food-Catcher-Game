@@ -10,7 +10,6 @@ public class Target : MonoBehaviour
     [SerializeField] int badScoreCount = -10;
     [SerializeField] float _zRange = 15f;
     [SerializeField] float _ySpawnPos = 25f;
-    [SerializeField] float _yPosToDestroy;
 
     // Start is called before the first frame update
     void Awake()
@@ -23,35 +22,16 @@ public class Target : MonoBehaviour
         transform.position = RandomSpawnPos();
     }
 
-    private void Update()
-    {
-        DestroyOnFall();
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("PotSensor"))
         {
-            if (gameObject.CompareTag("Bad"))
-            {
+            FoodCheck();
+        }
 
-                _gameManager.UpdateScore(badScoreCount);
-                _gameManager.UpdateLives();
-                Destroy(gameObject);
-
-                if (_gameManager.lives == 0)
-                {
-                    _gameManager.GameOver();
-                }
-            }
-            else
-            {
-                if (_gameManager.isGameActive)
-                {
-                    _gameManager.AddFoodScore(gameObject.tag);
-                    Destroy(gameObject);
-                }
-            }
+        if (other.CompareTag("OutOfTableSensor"))
+        {
+            Destroy(gameObject);
         }
     }
 
@@ -65,11 +45,27 @@ public class Target : MonoBehaviour
         return new Vector3(0, _ySpawnPos, Random.Range(-_zRange, _zRange));
     }
 
-    void DestroyOnFall()
+    void FoodCheck()
     {
-        if (gameObject.transform.position.y < _yPosToDestroy)
+        if (gameObject.CompareTag("Bad"))
         {
+
+            _gameManager.UpdateScore(badScoreCount);
+            _gameManager.UpdateLives();
             Destroy(gameObject);
+
+            if (_gameManager.lives == 0)
+            {
+                _gameManager.GameOver();
+            }
+        }
+        else
+        {
+            if (_gameManager.isGameActive)
+            {
+                _gameManager.AddFoodScore(gameObject.tag);
+                Destroy(gameObject);
+            }
         }
     }
 }
