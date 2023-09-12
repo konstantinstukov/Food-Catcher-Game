@@ -24,8 +24,24 @@ public class GameManager : MonoBehaviour
     [SerializeField] int pepperScore = 4;
 
     // Game settings
-    public int lives = 3;
-    [SerializeField] float spawnInterval = 2f;
+    private int _lives = 3;
+    public int lives
+    {
+        get { return _lives; }
+        set
+        {
+            if(value < 0)
+            {
+                Debug.LogError("lives cannot be less than zero");
+            }
+            else
+            {
+                _lives = value;
+            }
+        }
+    }
+
+    [SerializeField] private float spawnInterval = 2f;
 
     private int _score;
     private bool _paused;
